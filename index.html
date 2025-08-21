@@ -128,6 +128,12 @@ canvas {
 </head>
 <body>
 
+<!-- Musik -->
+<audio id="bg-music" loop>
+  <source src="Selamat Ulang Tahun Fika Melani.mp3" type="audio/mpeg">
+  Browser kamu tidak mendukung audio.
+</audio>
+
 <div class="envelope" id="envelope">
   <div class="flap"></div>
 </div>
@@ -144,6 +150,7 @@ const envelope = document.getElementById('envelope');
 const card = document.getElementById('card');
 const titleEl = document.getElementById('title');
 const messageEl = document.getElementById('message');
+const music = document.getElementById('bg-music');
 
 const titleText = "🎉 Selamat Ulang Tahun ke-18 🎉";
 const messageText = "Fika Melani\nSemoga panjang umur, sehat selalu, dan sukses selalu ya! 💖";
@@ -171,6 +178,9 @@ envelope.addEventListener('click', () => {
     });
   }, 1000);
   startConfetti();
+
+  // play musik
+  music.play();
 });
 
 // Confetti
