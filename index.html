@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ucapan Ulang Tahun Modern-Jadul</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(270deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+  background-size: 800% 800%;
+  animation: gradientAnim 15s ease infinite;
+}
+
+@keyframes gradientAnim {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.envelope {
+  width: 220px;
+  height: 160px;
+  background: #aaa;
+  border-radius: 10px;
+  perspective: 1000px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 80px;
+  background: #888;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  transform-origin: top center;
+  transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.envelope.open .flap {
+  transform: rotateX(-180deg);
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0) rotate(-10deg);
+  width: 350px;
+  max-width: 90vw;
+  padding: 25px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+.card.open {
+  transform: translate(-50%, -50%) scale(1) rotate(0deg);
+}
+
+#title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fffa00;
+  text-shadow:
+    2px 2px 0 #f00,
+    -2px -2px 0 #0ff,
+    2px -2px 0 #0f0,
+    -2px 2px 0 #00f;
+  animation: neonBlink 1.5s infinite alternate;
+  margin: 10px 0;
+  white-space: pre-wrap;
+}
+
+#message {
+  margin: 10px 0;
+  color: #222;
+  white-space: pre-wrap;
+}
+
+@keyframes neonBlink {
+  0% { text-shadow:
+    2px 2px 0 #f00,
+    -2px -2px 0 #0ff,
+    2px -2px 0 #0f0,
+    -2px 2px 0 #00f; color:#fffa00; }
+  50% { text-shadow:
+    1px 1px 0 #f00,
+    -1px -1px 0 #0ff,
+    1px -1px 0 #0f0,
+    -1px 1px 0 #00f; color:#fff200; }
+  100% { text-shadow:
+    2px 2px 0 #f00,
+    -2px -2px 0 #0ff,
+    2px -2px 0 #0f0,
+    -2px 2px 0 #00f; color:#fffa00; }
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+</style>
+</head>
+<body>
+
+<div class="envelope" id="envelope">
+  <div class="flap"></div>
+</div>
+
+<div class="card" id="card">
+  <h1 id="title"></h1>
+  <p id="message"></p>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+const envelope = document.getElementById('envelope');
+const card = document.getElementById('card');
+const titleEl = document.getElementById('title');
+const messageEl = document.getElementById('message');
+
+const titleText = "🎉 Selamat Ulang Tahun ke-18 🎉";
+const messageText = "Fika Melani\nSemoga panjang umur, sehat selalu, dan sukses selalu ya! 💖";
+
+// Typing effect
+function typeText(element, text, delay = 50, callback) {
+  element.textContent = '';
+  let i = 0;
+  const interval = setInterval(() => {
+    element.textContent += text[i];
+    i++;
+    if (i >= text.length) {
+      clearInterval(interval);
+      if(callback) callback();
+    }
+  }, delay);
+}
+
+envelope.addEventListener('click', () => {
+  envelope.classList.add('open');
+  setTimeout(() => {
+    card.classList.add('open');
+    typeText(titleEl, titleText, 40, () => {
+      typeText(messageEl, messageText, 40);
+    });
+  }, 1000);
+  startConfetti();
+});
+
+// Confetti
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confettiPieces = [];
+
+function ConfettiPiece() {
+  this.x = Math.random()*canvas.width;
+  this.y = Math.random()*canvas.height - canvas.height;
+  this.size = Math.random()*8 + 4;
+  this.speed = Math.random()*3 + 1;
+  this.angle = Math.random()*2*Math.PI;
+  this.rotation = Math.random()*360;
+  this.rotationSpeed = Math.random()*5 - 2.5;
+  this.shape = ['circle','star','heart'][Math.floor(Math.random()*3)];
+  this.color = ['#ff6b6b','#feca57','#48dbfb','#1dd1a1','#5f27cd','#ff9ff3'][Math.floor(Math.random()*6)];
+}
+
+ConfettiPiece.prototype.update = function() {
+  this.y += this.speed;
+  this.x += Math.sin(this.angle)*2;
+  this.rotation += this.rotationSpeed;
+  if(this.y > canvas.height) this.y = -10;
+}
+
+ConfettiPiece.prototype.draw = function() {
+  ctx.fillStyle = this.color;
+  ctx.save();
+  ctx.translate(this.x, this.y);
+  ctx.rotate(this.rotation*Math.PI/180);
+  if(this.shape==='circle'){
+    ctx.beginPath();
+    ctx.arc(0,0,this.size/2,0,Math.PI*2);
+    ctx.fill();
+  } else if(this.shape==='star'){
+    ctx.beginPath();
+    for(let i=0;i<5;i++){
+      ctx.lineTo(this.size * Math.cos((18+i*72)*Math.PI/180), -this.size * Math.sin((18+i*72)*Math.PI/180));
+      ctx.lineTo(this.size/2 * Math.cos((54+i*72)*Math.PI/180), -this.size/2 * Math.sin((54+i*72)*Math.PI/180));
+    }
+    ctx.closePath();
+    ctx.fill();
+  } else if(this.shape==='heart'){
+    ctx.beginPath();
+    const topCurveHeight = this.size*0.3;
+    ctx.moveTo(0, topCurveHeight);
+    ctx.bezierCurveTo(0,0, -this.size/2,0, -this.size/2, topCurveHeight);
+    ctx.bezierCurveTo(-this.size/2, this.size, 0, this.size*1.3, 0, this.size*1.6);
+    ctx.bezierCurveTo(0, this.size*1.3, this.size/2, this.size, this.size/2, topCurveHeight);
+    ctx.bezierCurveTo(this.size/2,0,0,0,0,topCurveHeight);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function startConfetti(){
+  confettiPieces = Array.from({length:150},()=>new ConfettiPiece());
+  animateConfetti();
+}
+
+function animateConfetti(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confettiPieces.forEach(p=>{
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animateConfetti);
+}
+</script>
+
+</body>
+</html>
